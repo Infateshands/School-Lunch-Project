@@ -126,7 +126,9 @@ void adminLogin() {
         system("cls");
         main();
     }
-}void adminView() {
+}
+// ADMIN CAN VIEW/DELETE USERS
+void adminView() {
     int choice;
     cout << "press 1 to see all users" << endl;
     cout << "press 2 to delete a user" << endl;
@@ -183,3 +185,4 @@ void deleteUser() {
     adminView();
     
 } 
+ 
