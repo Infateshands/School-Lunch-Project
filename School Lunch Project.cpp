@@ -44,12 +44,11 @@ int main() {
 
     default:
         cout << "enter valid choice\n";
-
-
     }
 
 
     return 0;
+
 }
 void login() {
     int count = 0;
@@ -85,9 +84,8 @@ void registration() {
     cin >> ruserId;
     cout << "\nenter password: ";
     cin >> rpassword;
-
     ofstream f1("records.txt", ios::app);
-    f1 << ruserId << endl << rpassword << endl << endl;
+    f1 << ruserId << " " <<  rpassword << endl << endl;
     system("cls");
     cout << "Thank You " << ruserId << ", Registration Succesful\n";
     system("pause");
@@ -148,6 +146,7 @@ void adminLogin() {
         adminView();
         break;
     case 2:
+        deleteUser();
         break;
     case 3:
         system("cls");
@@ -159,8 +158,30 @@ void adminLogin() {
 }
 void deleteUser() {
     system("cls");
-
-
+    string tempDelete;
+    string line;
+    ifstream myFile;
+    myFile.open("records.txt");
+    ofstream tempFile;
+    tempFile.open("temp.txt");
+    cout << "enter the user name of the user you want to delete: ";
+    cin >> tempDelete; 
+    if (myFile.is_open() && tempFile.is_open()){
+        while (getline(myFile, line)) {
+            if (line.find(tempDelete) == string::npos) {
+                tempFile << line << endl;
+            }
+        }
+    }
+    tempFile.close();
+    myFile.close();
+    remove("records.txt");
+    rename("temp.txt", "records.txt");
+    cout << "user deleted" << endl;
+    system("pause");
+    system("cls");
+    adminView();
+    
 }
 int count() {
     string line;
