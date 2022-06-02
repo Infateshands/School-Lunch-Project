@@ -10,13 +10,12 @@ void registration();
 void seeAllUsers();
 void adminLogin();
 void adminView();
-int count();
 void deleteUser();
 
+
 int main() {
-
+    // MAIN MENU
     int choice;
-
     cout << "\n\n\tpress 1 to LOGIN" << endl;
     cout << "\tpress 2 for ADMIN LOGIN" << endl;
     cout << "\tpress 3 to REGISTER" << endl;
@@ -24,7 +23,6 @@ int main() {
     cout << "\tenter choice: ";
     cin >> choice;
     cout << endl;
-
     switch (choice) {
     case 1:
         login();
@@ -45,11 +43,9 @@ int main() {
     default:
         cout << "enter valid choice\n";
     }
-
-
     return 0;
-
 }
+// USER ENTERS USERNAME AND PASSWORD AND IS CHECKED AGAINST RECORDS.TXT FILE
 void login() {
     int count = 0;
     string userId, password, id, pass;
@@ -68,7 +64,6 @@ void login() {
     input.close();
     if (count == 1) {
         cout << "Welcome back " << userId << ", Login Succesful\n";
-        main();
     }
     else {
         cout << "\nLogin Error\n";
@@ -77,6 +72,7 @@ void login() {
         main();
     }
 };
+// REGISTER NEW USER, SAVE DATA TO RECORDS.TXT FILE
 void registration() {
     string ruserId, rpassword, rid, rpass;
     system("cls");
@@ -91,6 +87,7 @@ void registration() {
     system("pause");
     main();
 };
+// SEE ALL USERS, PRINT RECORDS.TXT TO CONSOLE, ONLY AVAILABLE FOR ADMIN LOGIN
 void seeAllUsers() {
     fstream myFile;
     myFile.open("records.txt", ios::in);
@@ -101,6 +98,7 @@ void seeAllUsers() {
         }
     }
 }
+// ADMIN LOGIN, CHECKED AGAINST ADMIN.TXT FILE. 
 void adminLogin() {
     int count = 0;
     string userId, password, id, pass;
@@ -156,16 +154,18 @@ void adminLogin() {
         cout << "enter valid choice";
     }
 }
+//ADMIN CAN REMOVE USER FROM DATABASE.
 void deleteUser() {
     system("cls");
     string tempDelete;
     string line;
     ifstream myFile;
     myFile.open("records.txt");
-    ofstream tempFile;
+    ofstream tempFile;  // TEMP FILE TO STORE DATA
     tempFile.open("temp.txt");
     cout << "enter the user name of the user you want to delete: ";
     cin >> tempDelete; 
+    // FIND USER IN RECORDS.TXT FILE AND WRITE CONTENTS OF FILE MINUS DELETED USER TO TEMP FILE
     if (myFile.is_open() && tempFile.is_open()){
         while (getline(myFile, line)) {
             if (line.find(tempDelete) == string::npos) {
@@ -175,22 +175,11 @@ void deleteUser() {
     }
     tempFile.close();
     myFile.close();
-    remove("records.txt");
-    rename("temp.txt", "records.txt");
+    remove("records.txt"); // DELETE ORIGINAL RECORDS.TXT
+    rename("temp.txt", "records.txt"); // RENAME T4EMP FILE TO RECORDS.TXT 
     cout << "user deleted" << endl;
     system("pause");
     system("cls");
     adminView();
     
-}
-int count() {
-    string line;
-    int count{};
-    ifstream input;
-    input.open("records.txt");
-
-    while (getline(input, line)) {
-        count++;
-    }
-    return count;
 }
