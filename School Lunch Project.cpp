@@ -45,7 +45,7 @@ int main() {
     }
     return 0;
 }
-// USER ENTERS USERNAME AND PASSWORD AND IS CHECKED AGAINST RECORDS.TXT FILE
+// USER ENTERS USERNAME AND PASSWORD AND IS CHECKED AGAINST RECORDS.TXT FILE AND 3 ATTEMPTS GIVEN
 int login() {
     int count = 0;
     
@@ -56,15 +56,11 @@ int login() {
     cout << "enter password: ";
     cin >> password;
     ifstream input("records.txt");
-    
         while (input >> id >> pass) {
             if (id == userId && pass == password) {
                 count = 1;
                 system("cls");
             }
-
-
-
             input.close();
             if (count == 1) {
                 cout << "Welcome back " << userId << ", Login Succesful\n";
@@ -76,11 +72,6 @@ int login() {
                 system("pause");
                 system("cls");
                 login();
-                
-
-
-
-
             }
             else if (count == 0 && attemptsRemaining == 0) {
                 cout << "\ntoo many attempts. goodbye" << endl << endl;
@@ -88,9 +79,6 @@ int login() {
                 return 0;
             }
         }
-   
-    
-    
 };
 // REGISTER NEW USER, SAVE DATA TO RECORDS.TXT FILE
 void registration() {
