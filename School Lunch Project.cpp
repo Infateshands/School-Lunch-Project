@@ -5,13 +5,13 @@
 using namespace std;
 
 
-void login();
+int login();
 void registration();
 void seeAllUsers();
 void adminLogin();
 void adminView();
 void deleteUser();
-
+int attemptsRemaining = 2;
 
 int main() {
     // MAIN MENU
@@ -46,8 +46,9 @@ int main() {
     return 0;
 }
 // USER ENTERS USERNAME AND PASSWORD AND IS CHECKED AGAINST RECORDS.TXT FILE
-void login() {
+int login() {
     int count = 0;
+    
     string userId, password, id, pass;
     system("cls");
     cout << "enter username: ";
@@ -55,22 +56,41 @@ void login() {
     cout << "enter password: ";
     cin >> password;
     ifstream input("records.txt");
-    while (input >> id >> pass) {
-        if (id == userId && pass == password) {
-            count = 1;
-            system("cls");
+    
+        while (input >> id >> pass) {
+            if (id == userId && pass == password) {
+                count = 1;
+                system("cls");
+            }
+
+
+
+            input.close();
+            if (count == 1) {
+                cout << "Welcome back " << userId << ", Login Succesful\n";
+            }
+            else if (count == 0 && attemptsRemaining != 0) {
+                cout << "\nLogin Error...please try again\n";
+                attemptsRemaining--;
+                cout << endl << attemptsRemaining + 1 << " attempts left" << endl << endl;
+                system("pause");
+                system("cls");
+                login();
+                
+
+
+
+
+            }
+            else if (count == 0 && attemptsRemaining == 0) {
+                cout << "\ntoo many attempts. goodbye" << endl << endl;
+          
+                return 0;
+            }
         }
-    }
-    input.close();
-    if (count == 1) {
-        cout << "Welcome back " << userId << ", Login Succesful\n";
-    }
-    else {
-        cout << "\nLogin Error\n";
-        system("pause");
-        system("cls");
-        main();
-    }
+   
+    
+    
 };
 // REGISTER NEW USER, SAVE DATA TO RECORDS.TXT FILE
 void registration() {
