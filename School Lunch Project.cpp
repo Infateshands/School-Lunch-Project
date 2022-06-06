@@ -4,13 +4,14 @@
 #include <vector>
 using namespace std;
 
-
+// FUNCTION PROTOTYPES
 int login();
 void registration();
 void seeAllUsers();
 void adminLogin();
 void adminView();
 void deleteUser();
+// GLOBAL VARIABLES
 int attemptsRemaining = 2;
 
 int main() {
