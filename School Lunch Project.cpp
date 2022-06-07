@@ -1,197 +1,206 @@
-#include <iostream>
 #include <fstream>
-#include <string>
 #include <vector>
+#include <iostream>
+#include <string>
+#include <cstdio>
 using namespace std;
 
-// FUNCTION PROTOTYPES
-int login();
-void registration();
-void seeAllUsers();
-void adminLogin();
-void adminView();
+struct Users {
+    string uName;
+    string password;
+};
+struct Users users[10];
+Users currentUser;
+// function prototypes
+void usersFromFile();
+void login();
 void deleteUser();
-// GLOBAL VARIABLES
-int attemptsRemaining = 2;
+void editUser(string userToEdit);
+void registration();
+void adminLogin();
+void userView();
+void profileView();
 
-int main() {
-    // MAIN MENU
+int main()
+{
+    usersFromFile();
+    cout << endl << endl;
+    cout << "\t\t****************" << endl;
+    cout << "\t\t   MAIN MENU" << endl;
+    cout << "\t\t****************" << endl << endl << endl;
+    cout << "\t1. CUSTOMER LOGIN" << endl;
+    cout << "\t2. REGISTER" << endl;
+    cout << "\t3. ADMIN LOGIN" << endl;
+    cout << "\t4. EXIT" << endl << endl;
     int choice;
-    cout << "\n\n\tpress 1 to LOGIN" << endl;
-    cout << "\tpress 2 for ADMIN LOGIN" << endl;
-    cout << "\tpress 3 to REGISTER" << endl;
-    cout << "\tpress 4 to EXIT" << endl;
-    cout << "\tenter choice: ";
+    cout << "\tChoose and option: ";
     cin >> choice;
-    cout << endl;
     switch (choice) {
     case 1:
+        system("cls");
         login();
-        system("pause");
+        system("cls");
+        userView();
         break;
     case 2:
-        adminLogin();
-        adminView();
+        registration();
+        main();
         break;
     case 3:
-        registration();
+        adminLogin();
         break;
-
-
     case 4:
         return 0;
+    }
+}
 
-    default:
-        cout << "enter valid choice\n";
-    }
-    return 0;
-}
-// USER ENTERS USERNAME AND PASSWORD AND IS CHECKED AGAINST RECORDS.TXT FILE AND 3 ATTEMPTS GIVEN
-int login() {
-    int count = 0;
-    
-    string userId, password, id, pass;
-    system("cls");
-    cout << "enter username: ";
-    cin >> userId;
-    cout << "enter password: ";
-    cin >> password;
-    ifstream input("records.txt");
-        while (input >> id >> pass) {
-            if (id == userId && pass == password) {
-                count = 1;
-                system("cls");
-            }
-            input.close();
-            if (count == 1) {
-                cout << "Welcome back " << userId << ", Login Succesful\n";
-            }
-            else if (count == 0 && attemptsRemaining != 0) {
-                cout << "\nLogin Error...please try again\n";
-                attemptsRemaining--;
-                cout << endl << attemptsRemaining + 1 << " attempts left" << endl << endl;
-                system("pause");
-                system("cls");
-                login();
-            }
-            else if (count == 0 && attemptsRemaining == 0) {
-                cout << "\ntoo many attempts. goodbye" << endl << endl;
-          
-                return 0;
-            }
-        }
-};
-// REGISTER NEW USER, SAVE DATA TO RECORDS.TXT FILE
-void registration() {
-    string ruserId, rpassword, rid, rpass;
-    system("cls");
-    cout << "Enter user name: ";
-    cin >> ruserId;
-    cout << "\nenter password: ";
-    cin >> rpassword;
-    ofstream f1("records.txt", ios::app);
-    f1 << ruserId << " " <<  rpassword << endl << endl;
-    system("cls");
-    cout << "Thank You " << ruserId << ", Registration Succesful\n";
-    system("pause");
-    main();
-};
-// SEE ALL USERS, PRINT RECORDS.TXT TO CONSOLE, ONLY AVAILABLE FOR ADMIN LOGIN
-void seeAllUsers() {
-    fstream myFile;
-    myFile.open("records.txt", ios::in);
-    if (myFile.is_open()) {
-        string line;
-        while (getline(myFile, line)) {
-            cout << line << endl;
-        }
-    }
-}
-// ADMIN LOGIN, CHECKED AGAINST ADMIN.TXT FILE. 
-void adminLogin() {
-    int count = 0;
-    string userId, password, id, pass;
-    system("cls");
-    cout << "enter username: ";
-    cin >> userId;
-    cout << "enter password: ";
-    cin >> password;
-    ifstream input("admin.txt");
-    while (input >> id >> pass) {
-        if (id == userId && pass == password) {
-            count = 1;
-            system("cls");
-        }
-    }
-    input.close();
-    if (count == 1) {
-        cout << userId << "\nLogin Succesful\n";
-        system("cls");
 
-    }
-    else {
-        cout << "\nLogin Error\n";
-        system("pause");
-        system("cls");
-        main();
-    }
-}
-// ADMIN CAN VIEW/DELETE USERS
-void adminView() {
+void userView() {
     int choice;
-    cout << "press 1 to see all users" << endl;
-    cout << "press 2 to delete a user" << endl;
-    cout << "press 3 to exit to main menu" << endl;
-
+    cout << "Welcome back " << currentUser.uName << endl << endl;
+    cout << "1. Order Food" << endl << "2. View Profile" << endl << endl;
+    cout << "Choose an option: ";
     cin >> choice;
-
     switch (choice) {
     case 1:
-        system("cls");
-        seeAllUsers();
-        cout << endl;
-        system("pause");
-        system("cls");
-        adminView();
+        /*orderFood():*/
         break;
     case 2:
-        deleteUser();
-        break;
-    case 3:
         system("cls");
-        main();
-        break;
-    default:
-        cout << "enter valid choice";
+        profileView();
     }
 }
-//ADMIN CAN REMOVE USER FROM DATABASE.
-void deleteUser() {
-    system("cls");
-    string tempDelete;
-    string line;
-    ifstream myFile;
-    myFile.open("records.txt");
-    ofstream tempFile;  // TEMP FILE TO STORE DATA
-    tempFile.open("temp.txt");
-    cout << "enter the user name of the user you want to delete: ";
-    cin >> tempDelete; 
-    // FIND USER IN RECORDS.TXT FILE AND WRITE CONTENTS OF FILE MINUS DELETED USER TO TEMP FILE
-    if (myFile.is_open() && tempFile.is_open()){
-        while (getline(myFile, line)) {
-            if (line.find(tempDelete) == string::npos) {
-                tempFile << line << endl;
-            }
+void usersFromFile() {
+    string user, password;
+    int i = 0;
+    ifstream myFile("users.txt");
+    while (!myFile.eof()) {
+        myFile >> user >> password;
+        users[i].uName = user;
+        users[i].password = password;
+        i++;
+    }
+    /*for (b = 0; b < 5; b++) {
+        cout << users[b].uName << " " << users[b].password << endl;
+    }*/
+}
+void login() {
+    string user, password;
+    int count = 0;
+    cout << "username: ";
+    cin >> user;
+    cout << "password: ";
+    cin >> password;
+    for (int i = 0; i < 6; i++) {
+        if (user == users[i].uName && password == users[i].password) {
+            count = 1;
+            currentUser.uName = user;
+            currentUser.password = password;
         }
     }
-    tempFile.close();
+    if (count == 1) {
+        cout << "login succesful";
+    }
+    else {
+        cout << "login failed";
+        system("pause");
+        main();
+    }
+}
+void deleteUser() {
+    usersFromFile();
+    string user;
+    cout << "enter user to delete: ";
+    getline(cin, user);
+    fstream myFile("temp.txt", ios::app);
+    for (int i = 0; i < 6; i++) {
+        if (user != users[i].uName) {
+            myFile << users[i].uName << " " << users[i].password << endl;
+        }
+    }
     myFile.close();
-    remove("records.txt"); // DELETE ORIGINAL RECORDS.TXT
-    rename("temp.txt", "records.txt"); // RENAME T4EMP FILE TO RECORDS.TXT 
-    cout << "user deleted" << endl;
-    system("pause");
+    remove("users.txt");
+    rename("temp.txt", "users.txt");
+}
+void editUser(string userToEdit) {
+    usersFromFile();
+    string password;
+    int choice;
+    cout << "would you like to update user name or password?" << endl;
+    cout << "1. username\n2. password" << endl;
+    cin >> choice;
+    switch (choice) {
+        case 1: {
+            string newUserName;
+            cout << "enter new username: ";
+            cin >> newUserName;
+            for (int i = 0; i < 10; i++) {
+                if (users[i].uName == userToEdit) {
+                    users[i].uName = newUserName;
+                    currentUser.uName = newUserName;
+                }
+            }
+            cout << "username updated";
+            fstream myFile("temp.txt", ios::app);
+            for (int i = 0; i < 10; i++) {
+                myFile << users[i].uName << " " << users[i].password << endl;
+            }
+            myFile.close();
+            remove("users.txt");
+            rename("temp.txt", "users.txt");
+            break;
+        }
+        case 2: {
+            string newPassword, oldPassword;
+            cout << "please confirm your password: ";
+            cin >> oldPassword;
+            if (oldPassword == currentUser.password) {
+                cout << "enter new password: ";
+                cin >> newPassword;
+                for (int i = 0; i < 10; i++) {
+                    if (users[i].uName == userToEdit) {
+                        users[i].password = newPassword;
+                        currentUser.password = newPassword;
+                    }
+                }
+                cout << "password updated";
+                fstream myFile("temp.txt", ios::app);
+                for (int i = 0; i < 10; i++) {
+                    myFile << users[i].uName << " " << users[i].password << endl;
+                }
+                myFile.close();
+                remove("users.txt");
+                rename("temp.txt", "users.txt");
+            }
+            break;
+        }
+    }
+}
+void registration() {
     system("cls");
-    adminView();
-    
-} 
- 
+    usersFromFile();
+    string userName, password, passwordCheck;;
+    cout << "enter a username:";
+    cin >> userName;
+passwordCheck:;
+    cout << "enter a password: ";
+    cin >> password;
+    cout << "confrim password: ";
+    cin >> passwordCheck;
+    if (password == passwordCheck) {
+        fstream myFile("users.txt", ios::app);
+        myFile << userName << " " << password << endl;
+        myFile.close();
+    }
+    else {
+        cout << "paswords do not match, try again" << endl;
+        goto passwordCheck;
+    }
+    cout << "Registration Succesful. Please log in from the main menu" << endl << endl;
+}
+void adminLogin() {
+}
+void profileView() {
+    cout << "Username: " << currentUser.uName << endl;;
+    cout << "Password: " << currentUser.password << endl;
+}
