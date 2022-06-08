@@ -15,7 +15,7 @@ Users currentUser;
 void usersFromFile();
 void login();
 void deleteUser();
-void editUser(string userToEdit);
+void userEditUser(string userToEdit);
 void registration();
 void adminLogin();
 void userView();
@@ -43,22 +43,28 @@ int main()
         userView();
         break;
     case 2:
+        system("cls");
         registration();
         main();
         break;
     case 3:
+        system("cls");
         adminLogin();
+        /*adminView();*/
         break;
     case 4:
         return 0;
     }
 }
 
-
+void adminView() {
+    cout << "";
+}
 void userView() {
     int choice;
     cout << "Welcome back " << currentUser.uName << endl << endl;
-    cout << "1. Order Food" << endl << "2. View Profile" << endl << endl;
+    cout << "1. Order Food" << endl << "2. View Profile" << endl << "3. Edit Profle" <<
+        endl << endl;
     cout << "Choose an option: ";
     cin >> choice;
     switch (choice) {
@@ -68,6 +74,9 @@ void userView() {
     case 2:
         system("cls");
         profileView();
+        break;
+    case 3:
+        userEditUser(currentUser.uName);
     }
 }
 void usersFromFile() {
@@ -86,25 +95,36 @@ void usersFromFile() {
 }
 void login() {
     string user, password;
-    int count = 0;
-    cout << "username: ";
-    cin >> user;
-    cout << "password: ";
-    cin >> password;
-    for (int i = 0; i < 6; i++) {
-        if (user == users[i].uName && password == users[i].password) {
-            count = 1;
-            currentUser.uName = user;
-            currentUser.password = password;
+    int count = 0, attemptsLeft = 3;
+    while (attemptsLeft > 0 && count != 1) {
+        cout << "username: ";
+        cin >> user;
+        cout << "password: ";
+        cin >> password;
+        attemptsLeft--;
+        for (int i = 0; i < 6; i++) {
+            if (user == users[i].uName && password == users[i].password) {
+                count = 1;
+                currentUser.uName = user;
+                currentUser.password = password;
+            }
         }
-    }
-    if (count == 1) {
-        cout << "login succesful";
-    }
-    else {
-        cout << "login failed";
-        system("pause");
-        main();
+        if (count == 1) {
+            cout << "login succesful";
+        }
+        else if (count != 1 && attemptsLeft > 0) {
+            cout << "login failed, please try again...." << endl << endl;
+            cout << "you have " << attemptsLeft << " attempts remaining" << endl;
+            system("pause");
+            system("cls");
+        }
+        else if (count != 1 && attemptsLeft == 0) {
+            cout << "sorry, you have run out of attempts" << endl << "returning to main menu" 
+                << endl << endl;
+            system("pause");
+            system("cls");
+            main();
+        }
     }
 }
 void deleteUser() {
@@ -122,7 +142,7 @@ void deleteUser() {
     remove("users.txt");
     rename("temp.txt", "users.txt");
 }
-void editUser(string userToEdit) {
+void userEditUser(string userToEdit) {
     usersFromFile();
     string password;
     int choice;
@@ -176,6 +196,9 @@ void editUser(string userToEdit) {
         }
     }
 }
+void adminEditUser() {
+   
+}
 void registration() {
     system("cls");
     usersFromFile();
@@ -199,6 +222,38 @@ passwordCheck:;
     cout << "Registration Succesful. Please log in from the main menu" << endl << endl;
 }
 void adminLogin() {
+    string user, password, user1, password1;
+    int count = 0, attemptsLeft = 3;
+    while (attemptsLeft > 0 && count != 1) {
+        attemptsLeft--;
+        cout << "admin username: ";
+        cin >> user;
+        cout << "admin password: ";
+        cin >> password;
+        ifstream myFile("admin.txt");
+        myFile >> user1 >> password1;
+        if (user == user1 && password == password1) {
+            count = 1;
+        }
+        if (count == 1) {
+            cout << "login succesful";
+            currentUser.password = password;
+            currentUser.uName = user;
+        }
+        else if (count != 1 && attemptsLeft > 0) {
+            cout << "login failed, please try again...." << endl << endl;
+            cout << "you have " << attemptsLeft << " attempts remaining" << endl;
+            system("pause");
+            system("cls");
+        }
+        else if (count != 1 && attemptsLeft == 0) {
+            cout << "sorry, you have run out of attempts" << endl << "returning to main menu"
+                << endl << endl;
+            system("pause");
+            system("cls");
+            main();
+        }
+    }
 }
 void profileView() {
     cout << "Username: " << currentUser.uName << endl;;
