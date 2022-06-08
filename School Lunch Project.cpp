@@ -4,7 +4,7 @@
 #include <string>
 #include <cstdio>
 using namespace std;
-//test comment
+
 struct Users {
     string uName;
     string password;
