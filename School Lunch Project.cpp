@@ -11,6 +11,29 @@ struct Users {
 };
 struct Users users[10];
 Users currentUser;
+struct FoodMenu {
+
+    string main;
+    string mSize;
+    string side;
+    string drink;
+    double totalCost = 0;
+    string payment;
+
+};
+FoodMenu ap;
+string mainArr[7] = { "Pizza", "Sandwich", "Salad", "Sushi", "Burger", "Rice Bowl", "Skip Main" };
+string pMainArr[4] = { "Pepperoni", "Margherita", "Meatlovers", "Vegetarian" };
+string sMainArr[4] = { "BLT", "Reuben", "Cheese & Ham", "Vegetarian" };
+string sMainArr2[4] = { "Caesar", "Green", "Greek", "Fattoush" };
+string sMainArr3[4] = { "Tuna", "Salmon", "Chicken & Avo", "Tamago" };
+string bMainArr[4] = { "Traditional Cheese", "Spicy Chicken", "BBQ Beef", "Bacon & Cheese" };
+string rMainArr[4] = { "Oyakodon", "Tofu", "Tempeh", "Pork" };
+string sideArr[4] = { "Fries", "Fruit", "Protein Bar", "Skip Side" };
+string drinkArr[4] = { "Soft Drink", "Juice", "Smoothie", "Skip Drink" };
+
+int choiceMain = 0;
+float mainCost = 0, sideCost = 0, drinkCost = 0;
 // function prototypes
 void usersFromFile();
 void login();
@@ -20,6 +43,9 @@ void registration();
 void adminLogin();
 void userView();
 void profileView();
+void orderFood();
+void mainStart();
+void mainSize();
 
 int main()
 {
