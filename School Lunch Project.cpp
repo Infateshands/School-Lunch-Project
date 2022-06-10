@@ -46,6 +46,7 @@ void profileView();
 void orderFood();
 void mainStart();
 void mainSize();
+void endOrder();
 
 int main()
 {
@@ -96,6 +97,9 @@ void userView() {
     switch (choice) {
     case 1:
         orderFood();
+		
+		endOrder();
+
         break;
     case 2:
         system("cls");
@@ -670,6 +674,7 @@ orderEnd:;//order finalization
 	system("pause");
 	cout << "Payment Complete!\n";//output after user enters their choice of payment
 	cout << "Thanks for your order, have a great day.";//end message
+	system("pause");
 }
 void mainStart() {//welcome message and main menu 
 
@@ -711,4 +716,19 @@ mainSize:;
 	}
 
 
+}
+void endOrder() {
+	int choice;
+	cout << "\n1. Return to menu\n2. Logout and return to main menu";
+	cin >> choice;
+	switch (choice) {
+	case 1:
+		userView();
+		break;
+	case 2:
+		currentUser.uName = " ";
+		currentUser.password = " ";
+		system("cls");
+		main();
+	}
 }
