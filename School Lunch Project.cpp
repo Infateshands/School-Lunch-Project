@@ -5,12 +5,12 @@
 #include <cstdio>
 using namespace std;
 
+
+// structures
 struct Users {
     string uName;
     string password;
 };
-struct Users users[10];
-Users currentUser;
 struct FoodMenu {
 
     string main;
@@ -21,7 +21,12 @@ struct FoodMenu {
     string payment;
 
 };
+struct Users users[10];
+Users currentUser;
 FoodMenu ap;
+//vectors
+vector<Users> userList;
+//arrays
 string mainArr[7] = { "Pizza", "Sandwich", "Salad", "Sushi", "Burger", "Rice Bowl", "Skip Main" };
 string pMainArr[4] = { "Pepperoni", "Margherita", "Meatlovers", "Vegetarian" };
 string sMainArr[4] = { "BLT", "Reuben", "Cheese & Ham", "Vegetarian" };
@@ -31,14 +36,14 @@ string bMainArr[4] = { "Traditional Cheese", "Spicy Chicken", "BBQ Beef", "Bacon
 string rMainArr[4] = { "Oyakodon", "Tofu", "Tempeh", "Pork" };
 string sideArr[4] = { "Fries", "Fruit", "Protein Bar", "Skip Side" };
 string drinkArr[4] = { "Soft Drink", "Juice", "Smoothie", "Skip Drink" };
-
+//global variables
 int choiceMain = 0;
 float mainCost = 0, sideCost = 0, drinkCost = 0;
 // function prototypes
 void usersFromFile();
 void login();
 void deleteUser();
-void userEditUser(string userToEdit);
+void editUser(string userToEdit);
 void registration();
 void adminLogin();
 void userView();
@@ -47,9 +52,13 @@ void orderFood();
 void mainStart();
 void mainSize();
 void endOrder();
+void adminView();
+void adminEditUser();
 
-int main()
-{
+
+
+int main(){
+
     usersFromFile();
     cout << endl << endl;
     cout << "\t\t****************" << endl;
@@ -77,7 +86,7 @@ int main()
     case 3:
         system("cls");
         adminLogin();
-        /*adminView();*/
+        adminView();
         break;
     case 4:
         return 0;
@@ -85,12 +94,31 @@ int main()
 }
 
 void adminView() {
-    cout << "";
+	int choice;
+    cout << "ADMIN" << endl << endl;
+	cout << "1. View all users" << endl;
+	cout << "2. Edit a user" << endl;
+	cout << "3. Exit to main menu" << endl << endl;
+	cout << "enter an option: ";
+	cin >> choice;
+	switch (choice) {
+	case 1:
+		for (int i = 0; i < userList.size()-1; i++) {
+			cout << userList[i].uName << endl;
+		}
+		break;
+	case 2:
+		adminEditUser();
+		break;
+	case 3:
+		main();
+	}
+
 }
 void userView() {
     int choice;
     cout << "Welcome back " << currentUser.uName << endl << endl;
-    cout << "1. Order Food" << endl << "2. View Profile" << endl << "3. Edit Profle" <<
+	cout << "1. Order Food" << endl << "2. View Profile" << endl << "3. Edit Profle" << endl << "4. Log out and exit" <<
         endl << endl;
     cout << "Choose an option: ";
     cin >> choice;
@@ -106,22 +134,30 @@ void userView() {
         profileView();
         break;
     case 3:
-        userEditUser(currentUser.uName);
+        editUser(currentUser.uName);
+		break;
+	case 4:
+		currentUser.uName = " ";
+		currentUser.password = " ";
+		system("cls");
+		main();
     }
 }
 void usersFromFile() {
     string user, password;
+	Users temp;
     int i = 0;
     ifstream myFile("users.txt");
     while (!myFile.eof()) {
         myFile >> user >> password;
-        users[i].uName = user;
-        users[i].password = password;
+		temp.uName = user;
+		temp.password = password;
+        /*users[i].uName = user;
+        users[i].password = password;*/
+		userList.push_back(temp);
         i++;
+	
     }
-    /*for (b = 0; b < 5; b++) {
-        cout << users[b].uName << " " << users[b].password << endl;
-    }*/
 }
 void login() {
     string user, password;
@@ -132,8 +168,8 @@ void login() {
         cout << "password: ";
         cin >> password;
         attemptsLeft--;
-        for (int i = 0; i < 6; i++) {
-            if (user == users[i].uName && password == users[i].password) {
+        for (int i = 0; i <= userList.size()-1; i++) {
+            if (user == userList[i].uName && password == userList[i].password) {
                 count = 1;
                 currentUser.uName = user;
                 currentUser.password = password;
@@ -172,7 +208,7 @@ void deleteUser() {
     remove("users.txt");
     rename("temp.txt", "users.txt");
 }
-void userEditUser(string userToEdit) {
+void editUser(string userToEdit) {
     usersFromFile();
     string password;
     int choice;
@@ -184,20 +220,20 @@ void userEditUser(string userToEdit) {
         string newUserName;
         cout << "enter new username: ";
         cin >> newUserName;
-        for (int i = 0; i < 10; i++) {
-            if (users[i].uName == userToEdit) {
-                users[i].uName = newUserName;
+        for (int i = 0; i < userList.size()-1; i++) {
+            if (userList[i].uName == userToEdit) {
+                userList[i].uName = newUserName;
                 currentUser.uName = newUserName;
             }
         }
         cout << "username updated";
         fstream myFile("temp.txt", ios::app);
-        for (int i = 0; i < 10; i++) {
-            myFile << users[i].uName << " " << users[i].password << endl;
-        }
-        myFile.close();
-        remove("users.txt");
-        rename("temp.txt", "users.txt");
+		for (int i = 0; i < userList.size() - 1; i++) {
+			myFile << userList[i].uName << " " << userList[i].password << endl;
+		}
+		myFile.close();
+		remove("users.txt");
+		rename("temp.txt", "users.txt");
         break;
     }
     case 2: {
@@ -207,17 +243,17 @@ void userEditUser(string userToEdit) {
         if (oldPassword == currentUser.password) {
             cout << "enter new password: ";
             cin >> newPassword;
-            for (int i = 0; i < 10; i++) {
-                if (users[i].uName == userToEdit) {
-                    users[i].password = newPassword;
+            for (int i = 0; i < userList.size(); i++) {
+                if (userList[i].uName == userToEdit) {
+                    userList[i].password = newPassword;
                     currentUser.password = newPassword;
                 }
             }
             cout << "password updated";
             fstream myFile("temp.txt", ios::app);
-            for (int i = 0; i < 10; i++) {
-                myFile << users[i].uName << " " << users[i].password << endl;
-            }
+			for (int i = 0; i < userList.size() - 1; i++) {
+				myFile << userList[i].uName << " " << userList[i].password << endl;
+			}
             myFile.close();
             remove("users.txt");
             rename("temp.txt", "users.txt");
@@ -225,8 +261,43 @@ void userEditUser(string userToEdit) {
         break;
     }
     }
+	cout << endl << endl;
+	system("pause");
+	system("cls");
+	userView();
 }
 void adminEditUser() {
+	string user, newUser;
+	cout << "enter the username of the user to edit: ";
+	cin >> user;
+	cout << "enter new username: ";
+	cin >> newUser;
+	for (int i = 0; i < userList.size(); i++) {
+		if (userList[i].uName == user) {
+			userList[i].uName = newUser;
+		}
+	}
+	fstream myFile("temp.txt", ios::app);
+	
+	for (int i = 0; i < userList.size()-1; i++) {
+		myFile << userList[i].uName << " " << userList[i].password << endl;
+	}
+	myFile.close();
+	remove("users.txt");
+	rename("temp.txt", "users.txt");
+	cout << "user updated" << endl << endl;
+	char choice;
+	cout << "would you like to update another user? y/n; ";
+	cin >> choice;
+	switch (choice) {
+	case 'y':
+		system("cls");
+		adminEditUser();
+		break;
+	case 'n':
+		system("cls");
+		adminView();
+	}
 
 }
 void registration() {
@@ -252,42 +323,61 @@ passwordCheck:;
     cout << "Registration Succesful. Please log in from the main menu" << endl << endl;
 }
 void adminLogin() {
-    string user, password, user1, password1;
-    int count = 0, attemptsLeft = 3;
-    while (attemptsLeft > 0 && count != 1) {
-        attemptsLeft--;
-        cout << "admin username: ";
-        cin >> user;
-        cout << "admin password: ";
-        cin >> password;
-        ifstream myFile("admin.txt");
-        myFile >> user1 >> password1;
-        if (user == user1 && password == password1) {
-            count = 1;
-        }
-        if (count == 1) {
-            cout << "login succesful";
-            currentUser.password = password;
-            currentUser.uName = user;
-        }
-        else if (count != 1 && attemptsLeft > 0) {
-            cout << "login failed, please try again...." << endl << endl;
-            cout << "you have " << attemptsLeft << " attempts remaining" << endl;
-            system("pause");
-            system("cls");
-        }
-        else if (count != 1 && attemptsLeft == 0) {
-            cout << "sorry, you have run out of attempts" << endl << "returning to main menu"
-                << endl << endl;
-            system("pause");
-            system("cls");
-            main();
-        }
-    }
+	string user, password, user1, password1;
+	int count = 0, attemptsLeft = 3;
+	while (attemptsLeft > 0 && count != 1) {
+		attemptsLeft--;
+		cout << "admin username: ";
+		cin >> user;
+		cout << "admin password: ";
+		cin >> password;
+		ifstream myFile("admin.txt");
+		myFile >> user1 >> password1;
+		if (user == user1 && password == password1) {
+			count = 1;
+		}
+		if (count == 1) {
+			cout << "login succesful";
+			currentUser.password = password;
+			currentUser.uName = user;
+		}
+		else if (count != 1 && attemptsLeft > 0) {
+			cout << "login failed, please try again...." << endl << endl;
+			cout << "you have " << attemptsLeft << " attempts remaining" << endl;
+			system("pause");
+			system("cls");
+		}
+		else if (count != 1 && attemptsLeft == 0) {
+			cout << "sorry, you have run out of attempts" << endl << "returning to main menu"
+				<< endl << endl;
+			system("pause");
+			system("cls");
+			main();
+		}
+	}
 }
 void profileView() {
+	int choice;
+
     cout << "Username: " << currentUser.uName << endl;;
-    cout << "Password: " << currentUser.password << endl;
+    cout << "Password: " << currentUser.password << endl << endl;
+	cout << "1. Edit Profile" << endl;
+	cout << "2. Return to profile" << endl;
+	cout << "3. Exit and logout" << endl;
+	cout << "choose and option: ";
+	cin >> choice;
+	switch (choice) {
+	case 1:
+		system("cls");
+		editUser(currentUser.uName);
+		break;
+	case 2:
+		system("cls");
+		userView();
+		break;
+	case 3:
+		exit;
+	}
 }
 void orderFood() {
 	string sizeMain1;
@@ -723,6 +813,7 @@ void endOrder() {
 	cin >> choice;
 	switch (choice) {
 	case 1:
+		system("cls");
 		userView();
 		break;
 	case 2:
