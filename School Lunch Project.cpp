@@ -5,6 +5,7 @@
 #include <cstdio>
 using namespace std;
 
+// testing testing emma adds her code
 
 // structures
 struct Users {
@@ -40,7 +41,7 @@ string drinkArr[4] = { "Soft Drink", "Juice", "Smoothie", "Skip Drink" };
 int choiceMain = 0;
 float mainCost = 0, sideCost = 0, drinkCost = 0;
 // function prototypes
-void usersFromFile();
+void usersFromFile(string tempuser, string temppword);
 void login();
 void deleteUser();
 void editUser(string userToEdit);
@@ -59,7 +60,7 @@ void adminEditUser();
 
 int main(){
 
-    usersFromFile();
+    
     cout << endl << endl;
     cout << "\t\t****************" << endl;
     cout << "\t\t   MAIN MENU" << endl;
@@ -71,12 +72,15 @@ int main(){
     int choice;
     cout << "\tChoose and option: ";
     cin >> choice;
+	string u, p;
     switch (choice) {
     case 1:
         system("cls");
-        login();
-        system("cls");
-        userView();
+		
+		cin >> u;
+		cin >> p;
+		usersFromFile(u, p);
+        
         break;
     case 2:
         system("cls");
@@ -93,12 +97,13 @@ int main(){
     }
 }
 
-void adminView() {
+void adminView() { // admin only view
 	int choice;
     cout << "ADMIN" << endl << endl;
 	cout << "1. View all users" << endl;
 	cout << "2. Edit a user" << endl;
-	cout << "3. Exit to main menu" << endl << endl;
+	cout << "3. Delete a user" << endl;
+	cout << "4. Exit to main menu" << endl << endl;
 	cout << "enter an option: ";
 	cin >> choice;
 	switch (choice) {
@@ -111,11 +116,15 @@ void adminView() {
 		adminEditUser();
 		break;
 	case 3:
+		deleteUser();
+		break;
+	case 4:
 		main();
+		break;
 	}
 
 }
-void userView() {
+void userView() { // user main menu
     int choice;
     cout << "Welcome back " << currentUser.uName << endl << endl;
 	cout << "1. Order Food" << endl << "2. View Profile" << endl << "3. Edit Profle" << endl << "4. Log out and exit" <<
@@ -143,23 +152,21 @@ void userView() {
 		main();
     }
 }
-void usersFromFile() {
+void usersFromFile(string tempuser, string temppword) { // pulls users.txt into vector at start of app
     string user, password;
 	Users temp;
     int i = 0;
     ifstream myFile("users.txt");
     while (!myFile.eof()) {
         myFile >> user >> password;
-		temp.uName = user;
-		temp.password = password;
-        /*users[i].uName = user;
-        users[i].password = password;*/
-		userList.push_back(temp);
-        i++;
+		if (user == tempuser && password == temppword) {
+			userView();
+		}
+       
 	
     }
 }
-void login() {
+void login() { // reads users.txt and validates user input
     string user, password;
     int count = 0, attemptsLeft = 3;
     while (attemptsLeft > 0 && count != 1) {
@@ -193,8 +200,8 @@ void login() {
         }
     }
 }
-void deleteUser() {
-    usersFromFile();
+void deleteUser() { // deletes a user and rewrites users.txt
+    
     string user;
     cout << "enter user to delete: ";
     getline(cin, user);
@@ -208,8 +215,7 @@ void deleteUser() {
     remove("users.txt");
     rename("temp.txt", "users.txt");
 }
-void editUser(string userToEdit) {
-    usersFromFile();
+void editUser(string userToEdit) { //edits user info, rewrites users.txt
     string password;
     int choice;
     cout << "would you like to update user name or password?" << endl;
@@ -266,7 +272,7 @@ void editUser(string userToEdit) {
 	system("cls");
 	userView();
 }
-void adminEditUser() {
+void adminEditUser() { // admin can edit user
 	string user, newUser;
 	cout << "enter the username of the user to edit: ";
 	cin >> user;
@@ -300,9 +306,9 @@ void adminEditUser() {
 	}
 
 }
-void registration() {
+void registration() { // register new user, writes to users.txt
     system("cls");
-    usersFromFile();
+
     string userName, password, passwordCheck;;
     cout << "enter a username:";
     cin >> userName;
@@ -322,7 +328,7 @@ passwordCheck:;
     }
     cout << "Registration Succesful. Please log in from the main menu" << endl << endl;
 }
-void adminLogin() {
+void adminLogin() { // reads from admin.txt and validates
 	string user, password, user1, password1;
 	int count = 0, attemptsLeft = 3;
 	while (attemptsLeft > 0 && count != 1) {
@@ -356,7 +362,7 @@ void adminLogin() {
 		}
 	}
 }
-void profileView() {
+void profileView() { //user view profile menu
 	int choice;
 
     cout << "Username: " << currentUser.uName << endl;;
@@ -466,7 +472,8 @@ mainStart:;
 			goto mainEnd;
 		case 2: ap.main = sMainArr3[1];
 			goto mainEnd;
-		case 3: ap.main = sMainArr3[2];
+		case 3: 
+		ap.main = sMainArr3[2];
 			goto mainEnd;
 		case 4: ap.main = sMainArr3[3];
 			goto mainEnd;
@@ -476,7 +483,8 @@ mainStart:;
 			goto mainStart;
 		}
 
-	case 5: cout << "You have chosen: " << mainArr[4] << "\nplease pick your choice of burger\n"; //Burger
+	case 5: 
+		cout << "You have chosen: " << mainArr[4] << "\nplease pick your choice of burger\n"; //Burger
 		mainCost += 6;
 		for (int i = 0; i < 4; i++) {
 			cout << i + 1 << ". " << bMainArr[i] << endl;
@@ -807,7 +815,7 @@ mainSize:;
 
 
 }
-void endOrder() {
+void endOrder() { // gives user options after food order
 	int choice;
 	cout << "\n1. Return to menu\n2. Logout and return to main menu";
 	cin >> choice;
